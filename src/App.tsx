@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import { KolKolibri } from "@public-ui/react";
+import { KolButton, KolKolibri } from "@public-ui/react";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -22,9 +22,26 @@ function App() {
       </div>
       <h1>Vite + React + KoliBri</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <div className="flex place-center gap-4">
+          <button onClick={() => setCount((count) => count + 1)}>
+            count is {count}
+          </button>
+          <KolButton
+            _label={`count is ${count}`}
+            _on={{
+              onClick: () => setCount((count) => count + 1),
+            }}
+          />
+          <KolButton
+            _hideLabel
+            _label={`count is ${count}`}
+            _icons="codicon codicon-thumbsup"
+            _on={{
+              onClick: () => setCount((count) => count + 1),
+            }}
+            _variant="danger"
+          />
+        </div>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
