@@ -721,7 +721,7 @@ function Form() {
       )}
       <div className="grid md:grid-cols-2 gap-4">
         <KolInputDate
-          id="field-date"
++         id="field-date"
           _label="Datum"
           _required
 +         _error={form.errors.date ?? ""}
@@ -730,17 +730,17 @@ function Form() {
           _value={form.values.date}
         />
         <KolInputDate
-          id="field-time"
++         id="field-time"
           _label="Uhrzeit"
-          _type="time"
           _required
+          _type="time"
 +         _error={form.errors.time ?? ""}
           _on={createOnChange("time")}
 +         _touched={showErrorList}
           _value={form.values.time}
         />
         <KolInputNumber
-          id="field-numberOfPersons"
++         id="field-numberOfPersons"
           _label="Anzahl Personen"
           _min={1}
           _required
@@ -751,7 +751,7 @@ function Form() {
         />
         <span />
         <KolInputText
-          id="field-name"
++         id="field-name"
           _label="Name"
           _required
 +         _error={form.errors.name ?? ""}
@@ -760,7 +760,7 @@ function Form() {
           _value={form.values.name}
         />
         <KolInputText
-          id="field-phone"
++         id="field-phone"
           _label="Telefon"
           _required
           _type="tel"
@@ -926,8 +926,8 @@ function Form() {
         <KolInputDate
           id="field-time"
           _label="Uhrzeit"
-          _type="time"
           _required
+          _type="time"
           _error={form.errors.time ?? ""}
           _on={createOnChange("time")}
           _touched={showErrorList}
