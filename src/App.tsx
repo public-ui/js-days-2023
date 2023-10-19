@@ -1,55 +1,40 @@
-import { useState } from "react";
+import {
+  KolButton,
+  KolHeading,
+  KolInputDate,
+  KolInputNumber,
+  KolInputText,
+} from "@public-ui/react";
 import "./App.css";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import { KolButton, KolKolibri } from "@public-ui/react";
+import { ErrorList } from "./ErrorList";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className="flex place-end">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a href="https://public-ui.github.io" target="_blank">
-          <KolKolibri className="block logo w-35" />
-        </a>
-      </div>
-      <h1>Vite + React + KoliBri</h1>
-      <div className="card">
-        <div className="flex place-center gap-4">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <KolButton
-            _label={`count is ${count}`}
-            _on={{
-              onClick: () => setCount((count) => count + 1),
-            }}
-          />
-          <KolButton
-            _hideLabel
-            _label={`count is ${count}`}
-            _icons="codicon codicon-thumbsup"
-            _on={{
-              onClick: () => setCount((count) => count + 1),
-            }}
-            _variant="danger"
-          />
+    <div className="flex flex-col gap-4">
+      <KolHeading _label="Tischreservierung" />
+      {/* https://public-ui.github.io/docs/concepts/formular */}
+      <form className="flex flex-col gap-4">
+        <div className="mt-2" tabIndex={0}>
+          <ErrorList errors={{}} />
         </div>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+        <div className="grid md:grid-cols-2 gap-4">
+          <KolInputDate _label="Datum" _required />
+          <KolInputDate _label="Uhrzeit" _type="time" _required />
+          <KolInputNumber _label="Anzahl Personen" _min={1} _required />
+          <span />
+          {/* Über Label als Property zu sprechen . Robustheit, "echte" Barrierefreiheit */}
+          <KolInputText _label="Name" _required />
+          <KolInputText _label="Telefon" _required _type="tel" />
+          <hr className="col-span-2 w-full" />
+          <KolButton
+            _label="Anfrage absenden"
+            _type="submit"
+            _variant="primary"
+          />
+          <KolButton _label="Zurücksetzen" _type="reset" _variant="secondary" />
+        </div>
+      </form>
+    </div>
   );
 }
 
