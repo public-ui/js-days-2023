@@ -13,7 +13,6 @@ export function ErrorList({ errors }: ErrorListPropType) {
       _on: {
         onClick: () => {
           const field = document.getElementById(`field-${name}`);
-          console.log(field);
           if (field) {
             field.focus();
           }
