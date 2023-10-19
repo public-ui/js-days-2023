@@ -112,8 +112,8 @@ function Form() {
         <KolInputDate
           id="field-time"
           _label="Uhrzeit"
-          _type="time"
           _required
+          _type="time"
           _error={form.errors.time ?? ""}
           _on={createOnChange("time")}
           _touched={showErrorList}
