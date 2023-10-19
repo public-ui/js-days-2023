@@ -20,6 +20,8 @@ npm i -g pnpm
 
 ## Step 0
 
+> Initialen Stand aus checken: `git clone https://github.com/public-ui/js-days-2023`
+
 ### Projekt generieren
 
 ```bash
@@ -150,9 +152,9 @@ import "./index.css";
 +  .catch(console.warn);
 ```
 
-> Initialen Stand aus checken: `git clone https://github.com/public-ui/js-days-2023`
-
 ## Step 1
+
+> 👉 <https://github.com/public-ui/js-days-2023-private/pull/2/files>
 
 ### Logo einbinden
 
@@ -272,6 +274,7 @@ export default App;
 - <https://microsoft.github.io/vscode-codicons/dist/codicon.html>
 
 ```diff
+// index.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -294,9 +297,12 @@ export default App;
 
 ## Step 2
 
-### Formular aufbauen
+### Formular aufbauen (Step 2.1)
+
+Wir ersetzen den gesamten Quellcode in `src/App.tsx` mit folgendem:
 
 ```tsx
+// src/App.tsx
 import {
   KolButton,
   KolHeading,
@@ -340,7 +346,7 @@ function App() {
 export default App;
 ```
 
-### Formular-Logik hinzufügen
+### Formular-Logik hinzufügen (Step 2.2)
 
 - <https://formik.org/docs/overview#installation>
 
@@ -348,7 +354,136 @@ export default App;
 pnpm add formik
 ```
 
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
+```diff
+// src/App.tsx
+import {
+  KolButton,
+  KolHeading,
+  KolInputDate,
+  KolInputNumber,
+  KolInputText,
+} from "@public-ui/react";
+import "./App.css";
+import { ErrorList } from "./ErrorList";
++ import { InputTypeOnDefault, Iso8601 } from "@public-ui/components";
++ import { Formik, useFormikContext } from "formik";
+
++ type FormValues = {
++  date: Iso8601 | null;
++  time: Iso8601 | null;
++  numberOfPersons: number;
++  name: string;
++  phone: string;
++ };
+
++ const initialValues: FormValues = {
++  date: "2021-10-10",
++  time: "10:10",
++  numberOfPersons: 2,
++  name: "",
++  phone: "",
++ };
+
+function Form() {
++  const form = useFormikContext<FormValues>();
+
++  const createOnChange = (name: keyof FormValues): InputTypeOnDefault => {
++    return {
++      onChange: (event: Event, value: unknown) => {
++        if (event.target) {
++          void form.setFieldValue(name, value, true);
++        }
++      },
++    };
++  };
+
++  return (
+    <form
+      className="flex flex-col gap-4"
++     onSubmit={() => {
++       form.handleSubmit();
++     }}
++     onReset={() => {
++       form.handleReset();
++     }}
+    >
+      <div className="mt-2" tabIndex={0}>
+        <ErrorList errors={{}} />
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        <KolInputDate
+          _label="Datum"
+          _required
++         _on={createOnChange("date")}
++         _value={form.values.date}
+        />
+        <KolInputDate
+          _label="Uhrzeit"
+          _required
+          _type="time"
++         _on={createOnChange("time")}
++         _value={form.values.time}
+        />
+        <KolInputNumber
+          _label="Anzahl Personen"
+          _min={1}
+          _required
++         _on={createOnChange("numberOfPersons")}
++         _value={form.values.numberOfPersons}
+        />
+        <span />
+        <KolInputText
+          _label="Name"
+          _required
++         _on={createOnChange("name")}
++         _value={form.values.name}
+        />
+        <KolInputText
+          _label="Telefon"
+          _required
+          _type="tel"
++         _on={createOnChange("phone")}
++         _value={form.values.phone}
+        />
+        <hr className="col-span-2 w-full" />
+        <KolButton
+          _label="Anfrage absenden"
+          _type="submit"
+          _variant="primary"
+        />
+        <KolButton _label="Zurücksetzen" _type="reset" _variant="secondary" />
+      </div>
++     <pre>{JSON.stringify(form.values, null, 2)}</pre>
+    </form>
+  );
+}
+
+function App() {
+  return (
+    <div className="flex flex-col gap-4">
+      <KolHeading _label="Tischreservierung" />
++      <Formik<FormValues>
++        initialValues={initialValues}
++        onSubmit={(values) => {
++          console.log(values);
++        }}
++      >
+        <Form />
++      </Formik>
+    </div>
+  );
+}
+
+export default App;
+```
+
+</details>
+
 ```tsx
+// src/App.tsx
 import {
   KolButton,
   KolHeading,
@@ -412,30 +547,30 @@ function Form() {
         />
         <KolInputDate
           _label="Uhrzeit"
-          _type="time"
           _required
+          _type="time"
           _on={createOnChange("time")}
           _value={form.values.time}
         />
         <KolInputNumber
           _label="Anzahl Personen"
           _min={1}
-          _on={createOnChange("numberOfPersons")}
           _required
+          _on={createOnChange("numberOfPersons")}
           _value={form.values.numberOfPersons}
         />
         <span />
         <KolInputText
           _label="Name"
-          _on={createOnChange("name")}
           _required
+          _on={createOnChange("name")}
           _value={form.values.name}
         />
         <KolInputText
           _label="Telefon"
           _required
-          _on={createOnChange("phone")}
           _type="tel"
+          _on={createOnChange("phone")}
           _value={form.values.phone}
         />
         <hr className="col-span-2 w-full" />
@@ -470,33 +605,37 @@ function App() {
 export default App;
 ```
 
-### Formular-Validierung hinzufügen
+### Formular-Validierung hinzufügen (Step 2.3)
 
 - <https://formik.org/docs/guides/validation#validation>
 
-```tsx
-import { KolHeading } from "@public-ui/react";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import "./App.css";
+```bash
+pnpm add yup
+```
 
-import { InputTypeOnDefault, Iso8601 } from "@public-ui/components";
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
+```diff
+// src/App.tsx
++ import { InputTypeOnDefault, Iso8601 } from "@public-ui/components";
 import {
   KolButton,
+  KolHeading,
   KolInputDate,
   KolInputNumber,
   KolInputText,
 } from "@public-ui/react";
-import { useFormikContext } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { Formik, useFormikContext } from "formik";
++ import { useEffect, useMemo, useState } from "react";
++ import * as Yup from "yup";
 import "./App.css";
 import { ErrorList } from "./ErrorList";
 
-export type FormValues = {
+type FormValues = {
   date: Iso8601 | null;
   time: Iso8601 | null;
   numberOfPersons: number;
-  gender: string;
   name: string;
   phone: string;
 };
@@ -505,7 +644,200 @@ const initialValues: FormValues = {
   date: "2021-10-10",
   time: "10:10",
   numberOfPersons: 2,
-  gender: "",
+  name: "",
+  phone: "",
+};
+
++ const terminSchema = {
++  date: Yup.string().required("Bitte Datum wählen."),
++  time: Yup.string().required("Bitte Zeit wählen."),
++  numberOfPersons: Yup.number()
++    .required("Bitte Personenanzahl wählen.")
++    .max(8, "Maximal 8 Personen."),
++ };
+
++ const contactSchema = {
++  name: Yup.string().required("Bitte Nachname eingeben."),
++  phone: Yup.string().required("Bitte Telefon eingeben."),
++ };
+
+function Form() {
+  const form = useFormikContext<FormValues>();
++ const [errorList, setErrorList] = useState({
++   ...form.errors,
++ });
+
++ const showErrorList = useMemo(
++   () => Object.keys(errorList).length > 0,
++   [errorList]
++ );
+
++ useEffect(() => {
++   if (errorList) {
++     const errorList = document.getElementById("error-list");
++     if (errorList) {
++       errorList.focus();
++     }
++   }
++ }, [errorList]);
+
+  const createOnChange = (name: keyof FormValues): InputTypeOnDefault => {
+    return {
+      onChange: (event: Event, value: unknown) => {
+        if (event.target) {
+          void form.setFieldValue(name, value, true);
+        }
+      },
+    };
+  };
+
++ // Hack to trigger validation on mount
++ useEffect(() => {
++   form.handleSubmit();
++ }, []);
+
++ const onSubmit = () => {
++   console.log(form.errors);
++   form.handleSubmit();
++   setErrorList({
++     ...form.errors,
++   });
++  };
+
+  return (
+    <form
+      className="flex flex-col gap-4"
++     onSubmit={onSubmit}
+      onReset={() => {
++       setErrorList({});
+        form.handleReset();
++       form.handleSubmit(); // Hack to trigger validation on reset
+      }}
+    >
+      {showErrorList && (
+        <div className="mt-2" tabIndex={0} id="error-list">
++         <ErrorList errors={errorList} />
+        </div>
+      )}
+      <div className="grid md:grid-cols-2 gap-4">
+        <KolInputDate
+          id="field-date"
+          _label="Datum"
+          _required
++         _error={form.errors.date ?? ""}
+          _on={createOnChange("date")}
++         _touched={showErrorList}
+          _value={form.values.date}
+        />
+        <KolInputDate
+          id="field-time"
+          _label="Uhrzeit"
+          _type="time"
+          _required
++         _error={form.errors.time ?? ""}
+          _on={createOnChange("time")}
++         _touched={showErrorList}
+          _value={form.values.time}
+        />
+        <KolInputNumber
+          id="field-numberOfPersons"
+          _label="Anzahl Personen"
+          _min={1}
+          _required
++         _error={form.errors.numberOfPersons ?? ""}
+          _on={createOnChange("numberOfPersons")}
++         _touched={showErrorList}
+          _value={form.values.numberOfPersons}
+        />
+        <span />
+        <KolInputText
+          id="field-name"
+          _label="Name"
+          _required
++         _error={form.errors.name ?? ""}
+          _on={createOnChange("name")}
++         _touched={showErrorList}
+          _value={form.values.name}
+        />
+        <KolInputText
+          id="field-phone"
+          _label="Telefon"
+          _required
+          _type="tel"
++         _error={form.errors.phone ?? ""}
+          _on={createOnChange("phone")}
++         _touched={showErrorList}
+          _value={form.values.phone}
+        />
+        <hr className="col-span-2 w-full" />
+        <KolButton
+          _label="Anfrage absenden"
+          _type="submit"
+          _variant="primary"
+        />
+        <KolButton _label="Zurücksetzen" _type="reset" _variant="secondary" />
+      </div>
+    </form>
+  );
+}
+
++ const validationSchema = Yup.object().shape({
++  ...terminSchema,
++  ...contactSchema,
++ });
+
+function App() {
++ const onSubmit = (values: FormValues) => {
++   console.log("Valid form to sumbit", values);
++ };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <KolHeading _label="Tischreservierung" />
+      <Formik<FormValues>
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        validationSchema={validationSchema}
+      >
+        <Form />
+      </Formik>
+    </div>
+  );
+}
+
+export default App;
+```
+
+</details>
+
+```tsx
+// src/App.tsx
+import { InputTypeOnDefault, Iso8601 } from "@public-ui/components";
+import {
+  KolButton,
+  KolHeading,
+  KolInputDate,
+  KolInputNumber,
+  KolInputText,
+} from "@public-ui/react";
+import { Formik, useFormikContext } from "formik";
+import { useEffect, useMemo, useState } from "react";
+import * as Yup from "yup";
+import "./App.css";
+import { ErrorList } from "./ErrorList";
+
+type FormValues = {
+  date: Iso8601 | null;
+  time: Iso8601 | null;
+  numberOfPersons: number;
+  name: string;
+  phone: string;
+};
+
+const initialValues: FormValues = {
+  date: "2021-10-10",
+  time: "10:10",
+  numberOfPersons: 2,
   name: "",
   phone: "",
 };
@@ -564,16 +896,6 @@ function Form() {
     setErrorList({
       ...form.errors,
     });
-    if (Object.keys(errorList).length === 0) {
-      // TODO: Submit
-    } else {
-      setTimeout(() => {
-        const errorList = document.getElementById("error-list");
-        if (errorList) {
-          errorList.focus();
-        }
-      }, 1000);
-    }
   };
 
   return (
@@ -595,51 +917,51 @@ function Form() {
         <KolInputDate
           id="field-date"
           _label="Datum"
-          _on={createOnChange("date")}
           _required
+          _error={form.errors.date ?? ""}
+          _on={createOnChange("date")}
           _touched={showErrorList}
           _value={form.values.date}
-          _error={form.errors.date ?? ""}
         />
         <KolInputDate
           id="field-time"
           _label="Uhrzeit"
-          _on={createOnChange("time")}
           _type="time"
-          _touched={showErrorList}
           _required
-          _value={form.values.time}
           _error={form.errors.time ?? ""}
+          _on={createOnChange("time")}
+          _touched={showErrorList}
+          _value={form.values.time}
         />
         <KolInputNumber
           id="field-numberOfPersons"
           _label="Anzahl Personen"
-          _on={createOnChange("numberOfPersons")}
           _min={1}
-          _touched={showErrorList}
           _required
-          _value={form.values.numberOfPersons}
           _error={form.errors.numberOfPersons ?? ""}
+          _on={createOnChange("numberOfPersons")}
+          _touched={showErrorList}
+          _value={form.values.numberOfPersons}
         />
         <span />
         <KolInputText
           id="field-name"
           _label="Name"
+          _required
+          _error={form.errors.name ?? ""}
           _on={createOnChange("name")}
           _touched={showErrorList}
-          _required
           _value={form.values.name}
-          _error={form.errors.name ?? ""}
         />
         <KolInputText
           id="field-phone"
           _label="Telefon"
           _required
-          _on={createOnChange("phone")}
           _type="tel"
+          _error={form.errors.phone ?? ""}
+          _on={createOnChange("phone")}
           _touched={showErrorList}
           _value={form.values.phone}
-          _error={form.errors.phone ?? ""}
         />
         <hr className="col-span-2 w-full" />
         <KolButton
