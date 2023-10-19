@@ -50,6 +50,21 @@ export default defineConfig({
 });
 ```
 
+```ts
+// vite.config.ts
+import React from "@vitejs/plugin-react";
+import UnoCSS from "unocss/vite";
+import { defineConfig } from "vite";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [UnoCSS(), React()],
+});
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
 ```diff
 // vite.config.ts
 import React from "@vitejs/plugin-react";
@@ -63,6 +78,26 @@ export default defineConfig({
     React()],
 });
 ```
+
+</details>
+
+```tsx
+// src/main.tsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "uno.css";
+import App from "./App.tsx";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
 
 ```diff
 // src/main.tsx
@@ -79,6 +114,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
+</details>
+
 ### KoliBri integrieren
 
 #### Installation
@@ -91,8 +128,32 @@ pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-defau
 
 #### Ressourcen einbinden
 
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script
+      type="module"
+      src="/node_modules/@public-ui/components/dist/kolibri/kolibri.esm.js"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
 ```diff
-// index.html
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -112,6 +173,8 @@ pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-defau
 </html>
 ```
 
+</details>
+
 > **Visual Studio Code**
 >
 > Damit IntelliSense für KoliBri im reinem HTML funktioniert, muss der `.vscode/settings.json` im Projekt folgende Einstellung hinzugefügt werden:
@@ -130,6 +193,30 @@ pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-defau
 ```bash
 pnpm add @public-ui/theme-default@next
 ```
+
+```tsx
+// src/main.tsx
+import { register } from "@public-ui/components";
+import { DEFAULT } from "@public-ui/theme-default";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "uno.css";
+import App from "./App.tsx";
+import "./index.css";
+
+register(DEFAULT, [])
+  .then(() => {
+    ReactDOM.createRoot(document.getElementById("root")!).render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  })
+  .catch(console.warn);
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
 
 ```diff
 // src/main.tsx
@@ -152,11 +239,108 @@ import "./index.css";
 +  .catch(console.warn);
 ```
 
+</details>
+
 ## Step 1
 
 > 👉 <https://github.com/public-ui/js-days-2023-private/pull/2/files>
 
+### Sprachauszeichnung
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script
+      type="module"
+      src="/node_modules/@public-ui/components/dist/kolibri/kolibri.esm.js"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
+```diff
+<!-- index.html -->
+<!DOCTYPE html>
++ <html lang="de" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script
+      type="module"
+      src="/node_modules/@public-ui/components/dist/kolibri/kolibri.esm.js"
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+</details>
+
 ### Logo einbinden
+
+```tsx
+// src/App.tsx
+import { useState } from "react";
+import "./App.css";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import { KolKolibri } from "@public-ui/react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <div className="flex place-end">
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+        <a href="https://public-ui.github.io" target="_blank">
+          <KolKolibri className="block logo w-35" />
+        </a>
+      </div>
+      <h1>Vite + React + KoliBri</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  );
+}
+
+export default App;
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
 
 ```diff
 // src/App.tsx
@@ -201,7 +385,61 @@ function App() {
 export default App;
 ```
 
+</details>
+
 ### Button einbinden
+
+```tsx
+// src/App.tsx
+import { useState } from "react";
+import "./App.css";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import { KolButton, KolKolibri } from "@public-ui/react";
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <div className="flex place-end">
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+        <a href="https://public-ui.github.io" target="_blank">
+          <KolKolibri className="block logo w-35" />
+        </a>
+      </div>
+      <h1>Vite + React + KoliBri</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <KolButton
+          _label={`count is ${count}`}
+          _on={{
+            onClick: () => setCount((count) => count + 1),
+          }}
+        />
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  );
+}
+
+export default App;
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
 
 ```diff
 // src/App.tsx
@@ -252,13 +490,28 @@ function App() {
 export default App;
 ```
 
+</details>
+
 #### Icon hinzufügen
 
 > KoliBri arbeitet mit Fonts statt SVG (svg2font)
 
+```tsx
+// src/App.tsx
+<KolButton
+  _label={`count is ${count}`}
+  _icons="codicon codicon-thumbsup"
+  _on={{
+    onClick: () => setCount((count) => count + 1),
+  }}
+/>
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
 ```diff
 // src/App.tsx
-...
 <KolButton
   _label={`count is ${count}`}
 + _icons="codicon codicon-thumbsup"
@@ -266,17 +519,46 @@ export default App;
     onClick: () => setCount((count) => count + 1),
   }}
 />
-...
 ```
+
+</details>
 
 ##### Icon-Fonts integrieren
 
 - <https://microsoft.github.io/vscode-codicons/dist/codicon.html>
 
-```diff
-// index.html
+```html
+<!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+    <script
+      type="module"
+      src="/node_modules/@public-ui/components/dist/kolibri/kolibri.esm.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.33/dist/codicon.min.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+<details>
+<summary>Geänderte Code-Stellen hervorheben</summary>
+
+```diff
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -294,6 +576,8 @@ export default App;
   </body>
 </html>
 ```
+
+</details>
 
 ## Step 2
 
