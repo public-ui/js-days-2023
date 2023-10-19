@@ -18,7 +18,9 @@
 npm i -g pnpm
 ```
 
-## Projekt generieren
+## Step 0
+
+### Projekt generieren
 
 ```bash
 pnpm create vite workshop --template react-ts
@@ -27,7 +29,7 @@ pnpm i
 pnpm dev
 ```
 
-## Atomic Design integrieren
+### Atomic Design integrieren
 
 Um leicht die Anwendung zu gestalten, integrieren wir UnoCSS.
 
@@ -75,9 +77,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 );
 ```
 
-## KoliBri integrieren
+### KoliBri integrieren
 
-### Installation
+#### Installation
 
 ```bash
 pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-default@next
@@ -85,7 +87,7 @@ pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-defau
 
 > VSCode TS-Server neu starten empfohlen.
 
-### Ressourcen einbinden
+#### Ressourcen einbinden
 
 ```diff
 // index.html
@@ -121,7 +123,7 @@ pnpm add @public-ui/components@next @public-ui/react@next @public-ui/theme-defau
 > }
 > ```
 
-## Default-Theme einbinden
+### Default-Theme einbinden
 
 ```bash
 pnpm add @public-ui/theme-default@next
@@ -150,9 +152,9 @@ import "./index.css";
 
 > Initialen Stand aus checken: `git clone https://github.com/public-ui/js-days-2023`
 
-## React
+## Step 1
 
-## Logo einbinden
+### Logo einbinden
 
 ```diff
 // src/App.tsx
@@ -197,7 +199,7 @@ function App() {
 export default App;
 ```
 
-## Button einbinden
+### Button einbinden
 
 ```diff
 // src/App.tsx
@@ -248,7 +250,7 @@ function App() {
 export default App;
 ```
 
-### Icon hinzufügen
+#### Icon hinzufügen
 
 > KoliBri arbeitet mit Fonts statt SVG (svg2font)
 
@@ -265,7 +267,7 @@ export default App;
 ...
 ```
 
-#### Icon-Fonts integrieren
+##### Icon-Fonts integrieren
 
 - <https://microsoft.github.io/vscode-codicons/dist/codicon.html>
 
@@ -290,7 +292,9 @@ export default App;
 </html>
 ```
 
-## Formular aufbauen
+## Step 2
+
+### Formular aufbauen
 
 ```tsx
 import {
@@ -336,7 +340,7 @@ function App() {
 export default App;
 ```
 
-## Formular-Logik hinzufügen
+### Formular-Logik hinzufügen
 
 - <https://formik.org/docs/overview#installation>
 
@@ -466,7 +470,7 @@ function App() {
 export default App;
 ```
 
-## Formular-Validierung hinzufügen
+### Formular-Validierung hinzufügen
 
 - <https://formik.org/docs/guides/validation#validation>
 
